@@ -1,122 +1,187 @@
 import 'package:flutter/material.dart';
+// Local theme (inlined to avoid import issues)
+
+import 'package:smart_mobility_app/features/home/home_screen.dart';
+import 'package:smart_mobility_app/features/locate/locate_screen.dart';
+import 'package:smart_mobility_app/features/navigation/voice_navigation_screen.dart';
+import 'package:smart_mobility_app/features/walk_mode/walk_mode_screen.dart';
+import 'package:smart_mobility_app/features/transport/transport_screen.dart';
+import 'package:smart_mobility_app/features/emergency/emergency_screen.dart';
+import 'package:smart_mobility_app/features/settings/settings_screen.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(const SmartMobilityApp());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class SmartMobilityApp extends StatelessWidget {
+  const SmartMobilityApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // TRY THIS: Try running your application with "flutter run". You'll see
-        // the application has a purple toolbar. Then, without quitting the app,
-        // try changing the seedColor in the colorScheme below to Colors.green
-        // and then invoke "hot reload" (save your changes or press the "hot
-        // reload" button in a Flutter-supported IDE, or press "r" if you used
-        // the command line to start the app).
-        //
-        // Notice that the counter didn't reset back to zero; the application
-        // state is not lost during the reload. To reset the state, use hot
-        // restart instead.
-        //
-        // This works for code too, not just values: Most code changes can be
-        // tested with just a hot reload.
-        colorScheme: .fromSeed(seedColor: Colors.deepPurple),
-      ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      debugShowCheckedModeBanner: false,
+      title: "Smart Mobility Assistant",
+      theme: AppTheme.darkTheme,
+      initialRoute: AppRoutes.home,
+      routes: {
+        AppRoutes.home: (_) => const HomeScreen(),
+        AppRoutes.locate: (_) => const LocateScreen(),
+        AppRoutes.navigation: (_) => const VoiceNavigationScreen(),
+        AppRoutes.walkMode: (_) => const WalkModeScreen(),
+        AppRoutes.transport: (_) => const TransportScreen(),
+        AppRoutes.emergency: (_) => const EmergencyScreen(),
+        AppRoutes.settings: (_) => const SettingsScreen(),
+      },
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
-  final String title;
-
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
+class AppTheme {
+  static ThemeData darkTheme = ThemeData(
+    brightness: Brightness.dark,
+    primaryColor: const Color(0xFF2E8BFF),
+    scaffoldBackgroundColor: const Color(0xFF121212),
+    useMaterial3: true,
+    textTheme: const TextTheme(
+      titleLarge: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+      bodyMedium: TextStyle(fontSize: 16),
+    ),
+  );
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
+class AppRoutes {
+  static const home = "/";
+  static const locate = "/locate";
+  static const navigation = "/navigation";
+  static const walkMode = "/walk-mode";
+  static const transport = "/transport";
+  static const emergency = "/emergency";
+  static const settings = "/settings";
+}
 
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
-  }
+class HomeScreen extends StatelessWidget {
+  const HomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
     return Scaffold(
       appBar: AppBar(
-        // TRY THIS: Try changing the color here to a specific color (to
-        // Colors.amber, perhaps?) and trigger a hot reload to see the AppBar
-        // change color while the other colors stay the same.
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
+        title: const Text("Smart Mobility Assistant"),
+        centerTitle: true,
       ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
+      body: Padding(
+        padding: const EdgeInsets.all(16),
         child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          //
-          // TRY THIS: Invoke "debug painting" (choose the "Toggle Debug Paint"
-          // action in the IDE, or press "p" in the console), to see the
-          // wireframe for each widget.
-          mainAxisAlignment: .center,
-          children: [
-            const Text('You have pushed the button this many times:'),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
+          children: const [
+            _NavButton(label: "Locate Me", route: AppRoutes.locate, icon: Icons.my_location),
+            _NavButton(label: "Go to Location (Voice Navigation)", route: AppRoutes.navigation, icon: Icons.mic),
+            _NavButton(label: "Start Walk Mode", route: AppRoutes.walkMode, icon: Icons.visibility),
+            _NavButton(label: "Find Nearest Public Transport Stop", route: AppRoutes.transport, icon: Icons.directions_bus),
+            _NavButton(label: "Emergency Help", route: AppRoutes.emergency, icon: Icons.warning),
+            _NavButton(label: "Settings", route: AppRoutes.settings, icon: Icons.settings),
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
+    );
+  }
+}
+
+class _NavButton extends StatelessWidget {
+  final String label;
+  final String route;
+  final IconData icon;
+  const _NavButton({required this.label, required this.route, required this.icon});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 10),
+      child: ElevatedButton.icon(
+        onPressed: () => Navigator.pushNamed(context, route),
+        icon: Icon(icon, size: 28),
+        label: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 18),
+          child: Text(label, style: const TextStyle(fontSize: 18)),
+        ),
+        style: ElevatedButton.styleFrom(
+          minimumSize: const Size(double.infinity, 70),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(14),
+          ),
+        ),
       ),
+    );
+  }
+}
+
+class LocateScreen extends StatelessWidget {
+  const LocateScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Locate Me')),
+      body: const Center(child: Text('Locate feature coming soon')),
+    );
+  }
+}
+
+class VoiceNavigationScreen extends StatelessWidget {
+  const VoiceNavigationScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Voice Navigation')),
+      body: const Center(child: Text('Voice navigation feature coming soon')),
+    );
+  }
+}
+
+class WalkModeScreen extends StatelessWidget {
+  const WalkModeScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Walk Mode')),
+      body: const Center(child: Text('Walk mode feature coming soon')),
+    );
+  }
+}
+
+class TransportScreen extends StatelessWidget {
+  const TransportScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Transport')),
+      body: const Center(child: Text('Transport feature coming soon')),
+    );
+  }
+}
+
+class EmergencyScreen extends StatelessWidget {
+  const EmergencyScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Emergency')),
+      body: const Center(child: Text('Emergency feature coming soon')),
+    );
+  }
+}
+
+class SettingsScreen extends StatelessWidget {
+  const SettingsScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Settings')),
+      body: const Center(child: Text('Settings feature coming soon')),
     );
   }
 }
